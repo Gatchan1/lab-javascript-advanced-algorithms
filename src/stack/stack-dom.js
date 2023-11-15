@@ -43,20 +43,32 @@ const generateWarningStack = type => {
   }
 };
 
+const dissmissWarningStack = () => {
+  if (warningBottomStack.style.display != "none")
+  warningBottomStack.style.display = "none";
+  if (warningTopStack.style.display != "none")
+  warningTopStack.style.display = "none";
+}
+
 const addToStack = () => {
-  if (newStack.push(stackInput.value) === 'Stack Overflow') {
-    generateWarningStack('overflow');
-  } else {
+  try {
+    dissmissWarningStack();
+    newStack.push(stackInput.value);
     clearStackInput();
     renderListStack();
+  } catch {
+    generateWarningStack('overflow');
   }
 };
 
 const removeFromStack = () => {
-  if (newStack.pop() === 'Stack Underflow') {
-    generateWarningStack('underflow');
-  } else {
+  try {
+    dissmissWarningStack();
+    newStack.pop();
+    clearStackInput();
     renderListStack();
+  } catch {
+    generateWarningStack('underflow');
   }
 };
 

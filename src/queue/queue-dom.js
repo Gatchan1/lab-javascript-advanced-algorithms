@@ -1,47 +1,65 @@
-const queueUL = document.querySelector('.list-queue');
-const queueInput = document.querySelector('.queue-input');
-const warningTopQueue = document.querySelector('#queue-container .warning-top');
-const warningBottomQueue = document.querySelector(
-  '#queue-container .warning-bottom'
-);
-const addQueue = document.querySelector('.btn-add-queue');
-const dequeue = document.querySelector('.btn-take-dequeue');
+const queueUL = document.querySelector(".list-queue");
+const queueInput = document.querySelector(".queue-input");
+const warningQueue = document.querySelector("#queue-container .warning-top");
+const addQueue = document.querySelector(".btn-add-queue");
+const dequeue = document.querySelector(".btn-take-dequeue");
 
 const queue = new Queue();
 
 const clearQueueInput = () => {
-  // ... your code goes here
+  queueInput.value = "";
 };
 
 const generateListQueue = () => {
-  // ... your code goes here
+  warningQueue.style.display = "none";
+  queueUL.innerHTML = ""; // <- this one is very important!
+  // it resets the display to be empty, so that new things
+  // can be drawn afterwards from scratch ↓↓↓↓.
+  let filledBlocks = queue.display().length;
+  let emptyBlocks = queue.MAX_SIZE - filledBlocks;
+  for (let i = filledBlocks - 1; i >= 0; i--) {
+    let li = document.createElement("li");
+    li.className = "active";
+    li.innerHTML = queue.display()[i];
+    queueUL.appendChild(li);
+  }
+  for (let i = 0; i < emptyBlocks; i++) {
+    let li = document.createElement("li");
+    li.className = "inactive";
+    li.innerHTML = "&nbsp;";
+    queueUL.appendChild(li);
+  }
 };
 
 generateListQueue();
 
 const generateWarningQueue = (type) => {
-  if (type === 'underflow') {
-    // ... your code goes here
-  } else if (type === 'overflow') {
-    // ... your code goes here
-  }
+  warningQueue.style.display = "block";
+  warningQueue.innerText = type;
 };
 
 const addToQueue = () => {
   try {
-    // ... your code goes here
+    warningQueue.style.display = "none";
+    queue.enqueue(queueInput.value);
+    clearQueueInput();
+    console.log("queue so far:", queue.display());
+    generateListQueue();
   } catch (error) {
-    // there was an overflow error, handle it
+    generateWarningQueue("overflow");
   }
 };
 
 const removeFromQueue = () => {
   try {
-    // ... your code goes here
+    warningQueue.style.display = "none";
+    queue.dequeue();
+    console.log("queue so far:", queue.display());
+    generateListQueue();
   } catch (error) {
-    // there was an underflow error, handle it
+    generateWarningQueue("underflow");
   }
 };
 
-addQueue.addEventListener('click', addToQueue);
-dequeue.addEventListener('click', removeFromQueue);
+addQueue.addEventListener("click", addToQueue);
+dequeue.addEventListener("click", removeFromQueue);
